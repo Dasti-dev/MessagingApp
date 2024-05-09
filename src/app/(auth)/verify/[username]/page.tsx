@@ -34,11 +34,11 @@ function VerifyAccount() {
                 description: response.data.message
             })
 
-            router.replace('sign-in')
+            router.replace('/sign-in')
         } catch(error) {
             console.log('Error in verify endpoint of user', error);
             const AxiosError = error as AxiosError<ApiResponse>;
-            let errorMessage = AxiosError.response?.data.message;
+            let errorMessage = AxiosError.response?.data.message ?? 'An error occurred. Please try again.';
             toast({
               title: 'Verify failed',
               description: errorMessage,

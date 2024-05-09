@@ -30,7 +30,6 @@ export default function Home() {
           </p>
         </section>
 
-        {/* Carousel for Messages */}
         <Carousel
           plugins={[Autoplay({ delay: 2000 })]}
           className="w-full max-w-lg md:max-w-xl"

@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 export const messageSchema = z.object({
-    constent: z
+    content: z
         .string()
         .min(10,{message:'Content must be atleast 10 charactors'})
         .max(300,{message:'Content must be no longer than 300 charactors'})
