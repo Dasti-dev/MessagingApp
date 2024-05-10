@@ -59,6 +59,8 @@ function UserDashboard() {
         try{
             const response = await axios.get<ApiResponse>('/api/get-messages');
             setMessages(response.data.messages || []);
+            console.log(response.data);
+            console.log(messages);
             if(refresh) {
                 toast({
                     title: "Refreashed Messages",
@@ -89,7 +91,7 @@ function UserDashboard() {
 
     const handleSwitchChange = async () => {
         try {
-            const response = await axios.post<ApiResponse>('/api/accept-messages',{
+            const response = await axios.post<ApiResponse>('/api/accept-message',{
                 acceptMessage: !acceptMessage,
             })
             setValue('acceptMessages', !acceptMessage);

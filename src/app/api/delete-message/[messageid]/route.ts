@@ -13,7 +13,7 @@ export async function DELETE(
   const messageId = params.messageid;
   await dbConnect();
   const session = await getServerSession(authOptions);
-  const _user: User | undefined = session?.user;
+  const _user: User = session?.user as User;
   if (!session || !_user) {
     return Response.json(
       { success: false, message: 'Not authenticated' },
@@ -22,7 +22,7 @@ export async function DELETE(
   }
 
   try {
-    const updateResult = await UserModel.updateOne(
+    const updateResult = await UserModel.updateOne( 
       { _id: _user._id },
       { $pull: { messages: { _id: messageId } } }
     );
