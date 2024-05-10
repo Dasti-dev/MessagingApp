@@ -51,7 +51,7 @@ function UserDashboard() {
         } finally {
             setIsSwitchLoading(false);
         }
-    },[setValue])
+    },[setValue, toast])
 
     const fetchMessages = useCallback(async (refresh: boolean = false) => {
         setIsLoading(true);
@@ -79,7 +79,7 @@ function UserDashboard() {
             setIsLoading(false);
             setIsSwitchLoading(false);
         }
-    },[setIsLoading,setMessages]);
+    },[setIsLoading, setMessages, toast, messages]);
 
     useEffect(() => {
         if(!session || !session.user) {

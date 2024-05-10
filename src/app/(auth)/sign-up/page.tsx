@@ -1,12 +1,11 @@
-'use client'
 import React, { useEffect, useState } from 'react';
-import { useDebounceValue, useDebounceCallback } from 'usehooks-ts';
+import { useDebounceCallback } from 'usehooks-ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
 import { useToast } from '@/components/ui/use-toast';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router'; // Changed from 'next/navigation' to 'next/router'
 import { signUpSchema } from '@/schemas/signUpSchema';
 import axios, { AxiosError } from 'axios';
 import { ApiResponse } from '@/types/ApiResponse';
@@ -15,14 +14,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
-function page() {
-
-  const [username,setUsername] = useState('');
-  const [usernameMessage,setUsernameMessage] = useState('');
+function Page() { // Changed from 'page' to 'Page'
+  const [username, setUsername] = useState('');
+  const [usernameMessage, setUsernameMessage] = useState('');
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const debounced = useDebounceCallback(setUsername,300);
+  const debounced = useDebounceCallback(setUsername, 300);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -34,17 +32,17 @@ function page() {
       email: '',
       password: ''
     }
-  })
+  });
 
   useEffect(() => {
     const checkUsernameUnique = async () => {
-      if(username) {
+      if (username) {
         setIsCheckingUsername(true);
         setUsernameMessage('');
         try {
           const response = await axios.get(`/api/check-username-unique?username=${username}`);
-          setUsernameMessage(response.data.message)
-        } catch(error) {
+          setUsernameMessage(response.data.message);
+        } catch (error) {
           const AxiosError = error as AxiosError<ApiResponse>;
           setUsernameMessage(
             AxiosError.response?.data.message ?? 'Error checking username'
@@ -53,11 +51,9 @@ function page() {
           setIsCheckingUsername(false);
         }
       }
-
-      checkUsernameUnique();
-
-    }
-  },[username]);
+    };
+    checkUsernameUnique(); // Moved inside useEffect
+  }, [username]);
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
@@ -66,10 +62,10 @@ function page() {
       toast({
         title: 'Success',
         description: response.data.message,
-      })
+      });
       router.replace(`/verify/${username}`);
       setIsSubmitting(false);
-    } catch(error) {
+    } catch (error) {
       console.log('Error in signup of user', error);
       const AxiosError = error as AxiosError<ApiResponse>;
       let errorMessage = AxiosError.response?.data.message;
@@ -77,10 +73,10 @@ function page() {
         title: 'Signup failed',
         description: errorMessage,
         variant: 'destructive',
-      })
+      });
       setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100'>
@@ -94,60 +90,57 @@ function page() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
             <FormField
-                control={form.control}
-                name="username"
-                render={({field}) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="username" 
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="username"
                       {...field}
                       onChange={(e) => {
-                        field.onChange(e)
-                        debounced(e.target.value)
+                        field.onChange(e);
+                        debounced(e.target.value);
                       }}
-                      />
-                    </FormControl>
-                    {isCheckingUsername && <Loader2 className='animate-spin' />}
-                    <p className={`text-sm ${usernameMessage === "Username is unique" ? 'text-green-500' : 'text-red-500' }`}>
-                        test {usernameMessage}
-                    </p>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    />
+                  </FormControl>
+                  {isCheckingUsername && <Loader2 className='animate-spin' />}
+                  <p className={`text-sm ${usernameMessage === "Username is unique" ? 'text-green-500' : 'text-red-500'}`}>
+                    {usernameMessage}
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
-                control={form.control}
-                name="email"
-                render={({field}) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="email" 
-                      {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                  control={form.control}
-                  name="password"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type='password' placeholder="password" 
-                        {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-              />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type='password' placeholder="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <Button type='submit' disabled={isSubmitting}>
               {
@@ -173,4 +166,4 @@ function page() {
   )
 }
 
-export default page
+export default Page;

@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 // import {z} from "zod";
 
 export async function POST(request: Request) {
